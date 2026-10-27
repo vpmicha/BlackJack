@@ -4,9 +4,11 @@ import random
 import sys
 
 def main():
-    hands, cards = initial_deal(deck)
+    hands, player_cards, dealer_cards = initial_deal(deck)
     print(hands)
-    check_winV = check_win(cards)
+    while True:
+        check_winV = check_win(player_cards, dealer_cards)
+        next_move = next_move(cards)
 
 
 def initial_deal(cards):
@@ -18,19 +20,21 @@ def initial_deal(cards):
     value3 = deck.pop(card3)
     card4 = random.choice(list(cards))
     value4 = deck.pop(card4)
-    return f'Player: {value1+value3} ==> {card1}({value1}) / {card3}({value3})  || Dealer: {value2} ==> {card2}({value2}) / Hidden ==> ', [value1, value2, value3, value4]
+    return f'Player: {value1+value3} ==> {card1}({value1}) / {card3}({value3})  || Dealer: {value2} ==> {card2}({value2}) / Hidden', [value1, value3], [value2, value4]
 
-def check_win(list):
-    if list[0] + list[2] < 21 and list[1] + list[3] < 21:
-        pass
-    elif list[0] + list[2] < 21 and list[1] + list[3] == 21:
-        pass
-    elif list[0] + list[2] == 21 and list[1] + list[3] < 21:
-        pass
-    elif list[0] + list[2] == 21 and list[1] + list[3] == 21:
-        pass
-
-    return 'a'
-
+def check_win(cards1, cards2):
+    if sum(cards1) == 21 and sum(cards2) == 21:
+        return True
+    elif sum(cards1) == 21:
+        return True
+    elif sum(cards2) == 21:
+        return True
+    elif sum(cards1) > 21:
+        return 'Player Lost'
+    elif sum(cards2) > 21:
+        return 'Dealer Lost'
+    else:
+        Pass
+        
 
 main()
