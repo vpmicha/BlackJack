@@ -1,33 +1,44 @@
 from cards import deck
 import random
 import sys
+import time
 
 def main():
-    hands, player_cards, dealer_cards = initial_deal(deck)
-    print(hands)
     while True:
-        continuation = input('Hit or Stand? [H]/[S]:').lower().strip()
-        if continuation == 'h':
-            check_winV = check_win(player_cards)
-            print(next_move_player(deck, player_cards))
-        elif continuation == 's':
-            print(f'Hidden Card --> {dealer_cards[-1]} || Total Sum --> {sum(dealer_cards)}')
-            break
-    while True:
-        check_winV = check_winD(dealer_cards)
-        if check_winV == 'Dealer Lost':
-            print('Player Won')
-            sys.exit()
-        elif check_winV == 'Dealer Won':
-            print('Dealer Won')
-            sys.exit()
-        elif check_winD == 'STAND':
-            print(f'Total Sum --> {sum(dealer_cards)}')
-        elif check_winD == 'HIT':
-            pass
+        hands, player_cards, dealer_cards = initial_deal(deck)
+        print(hands)
+        while True:
+            continuation = input('Hit or Stand? [H]/[S]:').lower().strip()
+            if continuation == 'h':
+                check_winV = check_win(player_cards)
+                if check_winV == 'Player ACED':
+                    break
+                print(next_move_player(deck, player_cards))
+            elif continuation == 's':
+                time.sleep(0.5)
+                print(f'Hidden Card --> {dealer_cards[-1]} || Total Sum --> {sum(dealer_cards)}')
+                break
+        while True:
+            check_winV = check_winD(dealer_cards)
+            if check_winV == 'Dealer Lost':
+                break
+            elif check_winV == 'Dealer Won':
+                break
+            elif check_winV == 'STAND':
+                print(f'Total Sum --> {sum(dealer_cards)}')
+                break
+            elif check_winV == 'HIT':
+                print(next_move_dealer(deck, dealer_cards))
+                time.sleep(0.5)
+
+        if sum(dealer_cards) > sum(player_cards) and sum(dealer_cards) <= 21:
+            print('Dealer Wins!')
+        elif sum(dealer_cards) == sum(player_cards):
+            print('Push!')
+
         else:
-            pass
-        print(next_move_dealer(deck, dealer_cards))
+            print('Player Won!')
+        print(deck)
 
 def initial_deal(deck):
     card1 = random.choice(list(deck))
@@ -42,17 +53,17 @@ def initial_deal(deck):
 
 def check_win(cards1):
     if sum(cards1) == 21:
-        return 'Player Won'
+        return 'Player ACED'
     elif sum(cards1) > 21:
-        return 'Player Lost'
+        return 'Player EXCEEDED'
     else:
         return f'{sum(cards1)}. Do you want to continue?'
 
 def check_winD(cards2):
     if sum(cards2) == 21:
-        return 'Dealer Won'
+        return 'Dealer ACED'
     elif sum(cards2) > 21:
-        return 'Dealer Lost'
+        return 'Dealer EXCEEDED'
     elif sum(cards2) < 17:
         return 'HIT'
     elif sum(cards2) >= 17:
